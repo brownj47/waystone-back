@@ -96,4 +96,18 @@ module.exports = {
         res.status(500).json(err)
     }));
     },
+
+	deactivateGroup(req, res){
+        Group.findOneAndUpdate(
+            { _id: req.body.GroupId },
+            { $set: {isDeactivated:req.body.isDeactivated} },
+            { new:true},
+        ).then((group) => {
+            console.log(group)
+        !group
+          ? res.status(404).json({ message: 'No group with this id!' })
+          : res.json(group)
+          })
+      .catch((err) => res.status(500).json(err));
+    },
 }

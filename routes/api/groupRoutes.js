@@ -7,6 +7,7 @@ const {
   deleteGroup,
   addNewMembers,
   deleteMember,
+  deactivateGroup
 } = require('../../controllers/groupController.js');
 
 // /api/groups
@@ -21,5 +22,8 @@ router
 
 // /api/groups/members
 router.route('/members').post(addNewMembers).delete(deleteMember)
+
+// /api/groups/deactivate
+router.route('/deactivate').put(deactivateGroup);
 
 module.exports = router;

@@ -57,4 +57,18 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
     },
+
+	deactivateComment(req, res){
+        Comment.findOneAndUpdate(
+            { _id: req.body.CommentId },
+            { $set: {isDeactivated:req.body.isDeactivated} },
+            { new:true},
+        ).then((comment) => {
+            console.log(comment)
+        !comment
+          ? res.status(404).json({ message: 'No comment with this id!' })
+          : res.json(comment)
+          })
+      .catch((err) => res.status(500).json(err));
+    },
 }

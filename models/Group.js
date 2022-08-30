@@ -31,6 +31,10 @@ const groupSchema = new Schema(
     //     ref: "tags",
     //   },
     // ],
+	isDeactivated: {
+		type: Boolean,
+		default: false,
+	},
   	},
   	{
     toJSON: {
