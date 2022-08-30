@@ -12,7 +12,7 @@ router.route('/').get(getAllPosts).post(createNewPost);
 
 // /api/posts/:PostId
 router
-  .route('/:PostId')
+  .route('/post')
   .get(getOnePost)
   .put(updatePost)
   .delete(deletePost);

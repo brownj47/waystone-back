@@ -12,14 +12,14 @@ const {
 // /api/groups
 router.route('/').get(getAllGroups).post(createNewGroup);
 
-// /api/groups/:PostId
+// /api/groups/posts
 router
-  .route('/:GroupId')
+  .route('/group')
   .get(getOneGroup)
   .put(updateGroup)
   .delete(deleteGroup);
 
-// /api/groups/:GroupId
-router.route('/:GroupId/members/:UserdId').post(addNewMembers).delete(deleteMember)
+// /api/groups/members
+router.route('/members').post(addNewMembers).delete(deleteMember)
 
 module.exports = router;
