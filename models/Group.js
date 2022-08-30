@@ -2,27 +2,28 @@ const { Schema, model } = require("mongoose");
 
 // Schema to create User model
 const groupSchema = new Schema(
-  {
+  	{
     groupName: {
-      type: String,
-      unqiue: true,
-      required: true,
-      trim: true,
+      	type: String,
+      	unqiue: true,
+      	required: true,
+      	trim: true,
     },
     admin: {
-      type: String,
-    },
+		type: Schema.Types.ObjectId,
+	 	ref: "user",
+   	},
     posts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "post",
-      },
+      	{
+        	type: Schema.Types.ObjectId,
+        	ref: "post",
+      	},
     ],
     members: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-      },
+      	{
+       		type: Schema.Types.ObjectId,
+        	ref: "user",
+      	},
     ],
     // tags: [
     //   {
@@ -30,12 +31,12 @@ const groupSchema = new Schema(
     //     ref: "tags",
     //   },
     // ],
-  },
-  {
+  	},
+  	{
     toJSON: {
-      virtuals: true,
+    	virtuals: true,
     },
-  }
+  	}
 );
 
 //virtual for friend count, again something that can be used for
