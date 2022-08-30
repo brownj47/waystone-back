@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 //Comment schema
 const commentSchema = new Schema(
@@ -19,26 +19,29 @@ const commentSchema = new Schema(
     //     default: 1
     // },
     commentBody: {
-        type: String,
+        type:String,
         required: true,
         max_length: 140
     },
     username: {
-        type: String,
+        type:String,
         required: true
     },
     createdAt: {
         type:Date,
         default:Date.now()
     },
+	votes:{
+		type:Number,
+		default:0
+	},
 	//This will be the first attempt at nesting comments, I don't think it'll work without some kind of parentId value in the model
     replies: [
         {
-        type: Schema.Types.ObjectId,
-        ref: 'comment',
+        	type: Schema.Types.ObjectId,
+        	ref: 'comment',
         }
-       ],
-      
+    ],  
     },
   );
 

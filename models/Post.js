@@ -43,4 +43,4 @@ postSchema
 // Initialize our Post model
 const Post = model('Post', postSchema);
 
-module.exports = Post;s
+module.exports = Post
