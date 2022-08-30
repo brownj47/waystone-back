@@ -1,4 +1,9 @@
-const { User, Post, Group, Comment } = require('../models');
+const { User, Post, Comment, Group } = require('../models');
+
+const bcrypt = require('bcrypt');
+const express = require('express');
+const router = express.Router();
+const jwt = require("jsonwebtoken")
 
 module.exports = {
     getAllComments(req, res){

@@ -1,4 +1,8 @@
-const { User, Post, Group, Comment } = require('../models');
+const { User, Post, Comment, Group } = require('../models');
+
+const bcrypt = require('bcrypt');
+const express = require('express');
+const jwt = require("jsonwebtoken")
 
 module.exports = {
   getAllUsers(req, res) {
@@ -25,7 +29,25 @@ module.exports = {
 
   createNewUser(req, res) {
     User.create(req.body)
-      .then((userData) => res.json(userData))
+      .then(
+        (userData) => {
+
+          const token = jwt.sign(
+            {
+              id: newUser.id,
+              email: newUser.email
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "2h"
+            })
+
+          return res.json({
+            token: token,
+            user: userData
+          })
+        }
+      )
       .catch((err) => res.status(500).json(err));
   },
 
