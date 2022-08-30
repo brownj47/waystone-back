@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+import bcrypt from 'bcrypt'
 
 const atrributeSchema = require("./Attributes")
 
@@ -51,6 +52,12 @@ const userSchema = new Schema(
 		toJSON: {
 			virtuals: true,
 		},
+		hooks:{
+			beforeCreate:function(newUser){
+				newUser.password = bcrypt.hashSync(newUser.password,4);
+				return newUser
+			}
+		}
   	}
 );
 
