@@ -3,14 +3,20 @@ const commentSchema = require('./Comment')
 
 // Schema to create Thought model
 const postSchema = new Schema(
-	{
-		postText: {
+	{	
+		title: {
+			type: String,
+			required: true,
+			min_length: 1,
+			max_length: 80
+		},
+		post_body: {
 			type: String,
 			required: true,
 			min_length: 1,
 			max_length: 280
 		},
-		username: {
+		UserId: {
 				type:String,
 				required: true,
 		},
@@ -41,6 +47,6 @@ postSchema
 	});
 
 // Initialize our Post model
-const Post = model('Post', postSchema);
+const Post = model('post', postSchema);
 
 module.exports = Post

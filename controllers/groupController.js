@@ -11,7 +11,7 @@ module.exports = {
     },
 
     getOneGroup(req, res) {
-        Group.findOne({ _id: req.params.GroupId })
+        Group.findOne({ _id: req.body.GroupId })
         .populate('posts')
         .select('-__v')
         .then((group) =>
@@ -24,13 +24,20 @@ module.exports = {
 
     createNewGroup(req, res) {
         Group.create(req.body)
-        .then((groupData) => res.json(groupData))
+        .then((groupData) => {
+			res.json(groupData)
+			return User.findOneAndUpdate(
+                {_id: groupData.admin},
+                {$addToSet: { groups: { _id: groupData.id } }},
+                {new: true}
+            ) 
+		})
         .catch((err) => res.status(500).json(err));
     },
 
     updateGroup(req, res) {
         Group.findOneAndUpdate(
-            { _id: req.params.GroupId },
+            { _id: req.body.GroupId },
             { $set: req.body },
             {new: true}
         ).then((group) => {
@@ -42,7 +49,7 @@ module.exports = {
     },
 
     deleteGroup(req, res) {
-        Group.findOneAndDelete({ _id: req.params.GroupId })
+        Group.findOneAndDelete({ _id: req.body.GroupId })
       .then((group) =>
         !group
           ? res.status(404).json({ message: 'No group with that ID' })
@@ -54,16 +61,16 @@ module.exports = {
 
     addNewMembers(req, res) {
         Group.findOneAndUpdate(
-            { _id: req.params.GroupId },
-            { $addToSet: { members: req.params.UserId } },
+            { _id: req.body.GroupId },
+            { $addToSet: { members: req.body.UserId } },
         ).then((group) =>
         !group
           ? res.status(404).json({ message: 'No group with this id!' })
           : res.json(group)
         ).then(
         User.findOneAndUpdate(
-            { _id: req.params.UserId },
-            { $addToSet: { groups: req.params.GroupId } },
+            { _id: req.body.UserId },
+            { $addToSet: { groups: req.body.GroupId } },
         )
         .catch((err) => {
         console.log(err)
@@ -73,16 +80,16 @@ module.exports = {
 	
     deleteMember(req, res) {
         Group.findOneAndUpdate(
-            { _id: req.params.GroupId },
-            { $pull: { members: req.params.UserId } },
+            { _id: req.body.GroupId },
+            { $pull: { members: req.body.UserId } },
         ).then((group) =>
         !group
           ? res.status(404).json({ message: 'No group with this id!' })
           : res.json(group)
         ).then(
         User.findOneAndUpdate(
-            { _id: req.params.UserId },
-            { $pull: { groups: req.params.GroupId } },
+            { _id: req.body.UserId },
+            { $pull: { groups: req.body.GroupId } },
         )
         .catch((err) => {
         console.log(err)

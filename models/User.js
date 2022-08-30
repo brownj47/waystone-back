@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 import bcrypt from 'bcrypt'
 
-const atrributeSchema = require("./Attributes")
+const {Post, Group,atrributeSchema} = require("./Attributes")
 
 // Schema to create User model
 const userSchema = new Schema(

@@ -10,11 +10,14 @@ const {
 // /api/comments
 router.route('/').get(getAllComments).post(createNewComment);
 
-// /api/comments/:CommentId
+// /api/comments/comment
 router
-  .route('/:CommentId')
+  .route('/comment')
   .get(getOneComment)
   .put(updateComment)
   .delete(deleteComment);
+
+// /api/comments/deactivate
+router.route('/deactivate').get(getAllComments).post(createNewComment);
 
 module.exports = router;
