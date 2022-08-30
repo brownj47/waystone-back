@@ -5,7 +5,7 @@ const atrributeSchema = require("./Attributes")
 
 // Schema to create User model
 const userSchema = new Schema(
-  {
+	{
 		username: {
 			type: String,
 			unqiue: true,
@@ -47,23 +47,23 @@ const userSchema = new Schema(
 				ref: "group",
 			},
 		],
-  	},
-  	{
+	},
+	{
 		toJSON: {
 			virtuals: true,
 		},
-		hooks:{
-			beforeCreate:function(newUser){
-				newUser.password = bcrypt.hashSync(newUser.password,4);
+		hooks: {
+			beforeCreate: function (newUser) {
+				newUser.password = bcrypt.hashSync(newUser.password, 4);
 				return newUser
 			}
 		}
-  	}
+	}
 );
 
 //virtual for friend count, again something that can be used for
 userSchema.virtual("friendCount").get(function () {
-  return this.friends.length;
+	return this.friends.length;
 });
 
 const User = model("user", userSchema);
