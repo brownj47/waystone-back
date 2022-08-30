@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 // Schema to create User model
 const groupSchema = new Schema(
   	{
-    groupName: {
+    group_name: {
       	type: String,
       	unqiue: true,
       	required: true,
@@ -40,8 +40,8 @@ const groupSchema = new Schema(
 );
 
 //virtual for friend count, again something that can be used for
-groupSchema.virtual("friendCount").get(function () {
-  return this.friends.length;
+groupSchema.virtual("memberCount").get(function () {
+  return this.members.length;
 });
 
 const Group = model("group", groupSchema);

@@ -11,7 +11,7 @@ module.exports = {
     },
 
     getOneUser(req, res) {
-        User.findOne({ _id: req.params.userId })
+        User.findOne({ _id: req.body.UserId })
         .populate('posts')
         .select('-__v')
         .then((user) =>
@@ -30,7 +30,7 @@ module.exports = {
 
     updateUser(req, res) {
         User.findOneAndUpdate(
-            { _id: req.params.userId },
+            { _id: req.body.UserId },
             { $set: req.body },
             {new: true}
         ).then((user) => {
@@ -42,7 +42,7 @@ module.exports = {
     },
 
     deleteUser(req, res) {
-        User.findOneAndDelete({ _id: req.params.userId })
+        User.findOneAndDelete({ _id: req.body.UserId })
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
@@ -54,16 +54,16 @@ module.exports = {
 
     addNewFriend(req, res) {
         User.findOneAndUpdate(
-            { _id: req.params.userId },
-            { $addToSet: { friends: req.params.friendId } },
+            { _id: req.body.UserId },
+            { $addToSet: { friends: req.body.FriendId } },
         ).then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with this id!' })
           : res.json(user)
         ).then(
         User.findOneAndUpdate(
-            { _id: req.params.friendId },
-            { $addToSet: { friends: req.params.userId } },
+            { _id: req.body.FriendId },
+            { $addToSet: { friends: req.body.UserId } },
         )
         .catch((err) => {
         console.log(err)
@@ -73,16 +73,16 @@ module.exports = {
 	
     deleteFriend(req, res) {
         User.findOneAndUpdate(
-            { _id: req.params.userId },
-            { $pull: { friends: req.params.friendId } },
+            { _id: req.body.UserId },
+            { $pull: { friends: req.body.FriendId } },
         ).then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with this id!' })
           : res.json(user)
         ).then(
         User.findOneAndUpdate(
-            { _id: req.params.friendId },
-            { $pull: { friends: req.params.userId } },
+            { _id: req.body.FriendId },
+            { $pull: { friends: req.body.UserId } },
         )
         .catch((err) => {
         console.log(err)

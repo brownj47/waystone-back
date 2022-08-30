@@ -8,8 +8,8 @@ module.exports = {
     },
 
     getOneComment(req, res){
-        Comment.findOne({ _id: req.params.CommentId })
-         .select('-__v')
+        Comment.findOne({ _id: req.body.CommentId })
+        .select('-__v')
         .then((comment) =>
         !comment
           ? res.status(404).json({ message: 'No comment with that ID' })
@@ -22,9 +22,10 @@ module.exports = {
         Comment.create(req.body)
         .then((commentData) => {
             res.json(commentData)
+			console.log(commentData)
             return Post.findOneAndUpdate(
                 {_id: commentData.PostId},
-                {$addToSet: { comments: req.body }},
+                {$addToSet: { comments: {_id: commentData.id} }},
                 {new: true}
             ) 
         }).catch((err) => {
@@ -35,7 +36,7 @@ module.exports = {
 
     updateComment(req, res){
         Comment.findOneAndUpdate(
-            { _id: req.params.CommentId },
+            { _id: req.body.CommentId },
             { $set: req.body },
             { new:true},
         ).then((comment) => {
@@ -48,7 +49,7 @@ module.exports = {
     },
 	
     deleteComment(req, res){
-        Comment.findOneAndDelete({ _id: req.params.CommentId })
+        Comment.findOneAndDelete({ _id: req.body.CommentId })
         .then((comment) =>
         !comment
           ? res.status(404).json({ message: 'No comment with this id!' })
