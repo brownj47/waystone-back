@@ -154,6 +154,26 @@ module.exports = {
 		)
 	},
 
+	requestGroup(req, res){
+		User.findOneAndUpdate(
+			{ _id: req.body.UserId },
+			{ $addToSet: { groupRequests: req.body.GroupId } }
+		)
+		.then((user) =>
+			!user
+			? res.status(404).json({ message: "No user with this id!" })
+			: res.json(user)
+		)
+		.then(
+			Group.findOneAndUpdate(
+			{ _id: req.body.GroupId },
+			{ $addToSet: { inbox: req.body.UserId } },
+			).catch((err) => {
+			console.log(err);
+			res.status(500).json(err);
+			})
+		);
+	},
 
 	deleteFriend(req, res) {
 		User.findOneAndUpdate(
