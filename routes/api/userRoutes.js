@@ -2,11 +2,14 @@ const router = require('express').Router();
 const {
   getAllUsers,
   getOneUser,
-  createNewUser,
   randomFriend,
+  createNewUser,
   updateUser,
   deleteUser,
-  addNewFriend,
+  requestFriend,
+  acceptFriend,
+  denyFriend,
+  requestGroup,
   deleteFriend,
   deactivateUser,
 
@@ -21,12 +24,18 @@ router.route('/d20').get(randomFriend);
 // /api/users/user
 router
   .route('/user')
-  .get(getOneUser)
+  .get(getOneUser) 
   .put(updateUser)
   .delete(deleteUser);
 
+// /api/users/requests
+router.route('/requests').post(requestFriend).put(acceptFriend).delete(denyFriend)
+
+// /api/users/groups
+router.route('/groups').post(requestGroup)
+
 // /api/users/friends
-router.route('/friends').post(addNewFriend).delete(deleteFriend)
+router.route('/friends').delete(deleteFriend)
 
 // /api/users/deactivate
 router.route('/deactivate').put(deactivateUser)

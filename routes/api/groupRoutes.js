@@ -5,7 +5,8 @@ const {
   createNewGroup,
   updateGroup,
   deleteGroup,
-  addNewMembers,
+  acceptRequest,
+  denyRequest,
   deleteMember,
   deactivateGroup
 } = require('../../controllers/groupController.js');
@@ -13,7 +14,7 @@ const {
 // /api/groups
 router.route('/').get(getAllGroups).post(createNewGroup);
 
-// /api/groups/posts
+// /api/groups/group
 router
   .route('/group')
   .get(getOneGroup)
@@ -21,7 +22,10 @@ router
   .delete(deleteGroup);
 
 // /api/groups/members
-router.route('/members').post(addNewMembers).delete(deleteMember)
+router.route('/members').put(acceptRequest).delete(denyRequest)
+
+// /api/groups/members/remove
+router.route('/members/remove').delete(deleteMember)
 
 // /api/groups/deactivate
 router.route('/deactivate').put(deactivateGroup);

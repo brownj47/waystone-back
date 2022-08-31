@@ -64,10 +64,13 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
     },
 
-    addNewMembers(req, res) {
+    acceptRequest(req, res) {
         Group.findOneAndUpdate(
             { _id: req.body.GroupId },
-            { $addToSet: { members: req.body.UserId } },
+            { 
+				$addToSet: { members: req.body.UserId },
+				$pull: { inbox: req.body.UserId } 
+			},
         ).then((group) =>
         !group
           ? res.status(404).json({ message: 'No group with this id!' })
@@ -82,6 +85,18 @@ module.exports = {
         res.status(500).json(err)
     }));
     },
+
+	denyRequest(req, res) {
+		Group.findOneAndUpdate(
+		{ _id: req.body.GroupId },
+		{ $pull: { inbox: req.body.UserId } }
+		)
+		.then((user) =>
+			!user
+			? res.status(404).json({ message: "No user with this id!" })
+			: res.json(user)
+		)
+	},
 	
     deleteMember(req, res) {
         Group.findOneAndUpdate(

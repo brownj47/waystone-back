@@ -57,6 +57,12 @@ const userSchema = new Schema(
 				ref: "user",
 			},
 		],
+		groupRequests: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "group",
+			},
+		],
 		groups: [
 			{
 				type: Schema.Types.ObjectId,
