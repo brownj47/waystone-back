@@ -54,16 +54,36 @@ module.exports = {
       });
   },
 
-  updateUser(req, res) {
-    User.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $set: req.body },
-      { new: true }
-    ).then((user) => {
-      !user
-        ? res.status(404).json({ message: 'No user with this id!' })
-        : res.json(user)
-    })
+    randomFriend(req, res) {
+        User.findOne({ _id: req.body.UserId })
+        .populate('posts')
+        .select('-__v')
+        .then(async(user) =>{
+        	if (!user){
+         		res.status(404).json({ message: 'No user with that ID' })
+			}
+        	res.json(user)
+			const highlightedPosts = user.posts.sort(function(){return .5 - Math.random()}).slice(0,3);
+			console.log(highlightedPosts)
+			return await User.findOneAndUpdate(
+				{ _id: user.id },
+				{ $set: { highlightedPosts: highlightedPosts } },
+				{ new: true }
+			)
+		})
+      .catch((err) => res.status(500).json(err));
+    },
+
+    updateUser(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.body.UserId },
+            { $set: req.body },
+            {new: true}
+        ).then((user) => {
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+        })
       .catch((err) => res.status(500).json(err));
   },
 
@@ -116,68 +136,17 @@ module.exports = {
         }));
   },
 
-  async checkToken(req, res) {
-    const token = req.headers.authorization.split(" ")[1]
-    try {
-      const userData = jwt.verify(token, process.env.JWT_SECRET)
-      res.json(userData)
-    } catch {
-      res.status(403).json({ msg: "invalid token" })
-    }
-  },
-  async userFromToken(req, res) {
-    const token = req.headers.authorization.split(" ")[1]
-    try {
-      const userData = jwt.verify(token, process.env.JWT_SECRET)
-      User.findByPk(userData.id, {
-        include: [{ model: User }]
-      }).then(userData => {
-        res.json(userData)
-      }).catch(err => {
-        res.status(500).json({ msg: "an error occurred", err })
-      })
-    } catch {
-      res.status(403).json({ msg: "invalid token" })
-    }
-  },
-  async login(req, res) {
-    User.findOne({
-      where: { email: req.body.email }
-    }).then(foundUser => {
-      if (!foundUser) {
-        return res.status(401).json({ msg: "invalid login credentials!" })
-      }
-      else if (!bcrypt.compareSync(req.body.password, foundUser.password)) {
-        return res.status(401).json({ msg: "invalid login credentials!" })
-      } else {
-        const token = jwt.sign({
-          id: foundUser.id,
-          email: foundUser.email
-        }, process.env.JWT_SECRET, {
-          expiresIn: "2h"
-        })
-        return res.json({
-          token: token,
-          user: foundUser
-        })
-      }
-    }).catch(err => {
-      res.status(500).json({ msg: "an error occurred", err })
-    })
-
-  },
-  deactivateUser(req, res){
-    User.findOneAndUpdate(
-        { _id: req.body.UserId },
-        { $set: {isDeactivated:req.body.isDeactivated} },
-        { new:true},
-    ).then((user) => {
-        console.log(user)
-    !user
-      ? res.status(404).json({ message: 'No user with this id!' })
-      : res.json(user)
-      })
-  .catch((err) => res.status(500).json(err));
-},
-
+	deactivateUser(req, res){
+        User.findOneAndUpdate(
+            { _id: req.body.UserId },
+            { $set: {isDeactivated:req.body.isDeactivated} },
+            { new:true},
+        ).then((user) => {
+            console.log(user)
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+          })
+      .catch((err) => res.status(500).json(err));
+    },
 }

@@ -25,6 +25,18 @@ const groupSchema = new Schema(
         	ref: "user",
       	},
     ],
+	inbox: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "user",
+		},
+	],
+	outbox: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "user",
+		},
+	],
     // tags: [
     //   {
     //     type: Schema.Types.ObjectId,
