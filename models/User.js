@@ -1,7 +1,7 @@
+const bcrypt = require('bcrypt')
 const { Schema, model } = require("mongoose");
-import bcrypt from 'bcrypt'
 
-const {Post, Group,atrributeSchema} = require("./Attributes")
+const { Post, Group, atrributeSchema } = require("./Attributes")
 
 // Schema to create User model
 const userSchema = new Schema(
@@ -52,12 +52,6 @@ const userSchema = new Schema(
 		toJSON: {
 			virtuals: true,
 		},
-		hooks: {
-			beforeCreate: function (newUser) {
-				newUser.password = bcrypt.hashSync(newUser.password, 4);
-				return newUser
-			}
-		}
 	}
 );
 
@@ -66,6 +60,16 @@ userSchema.virtual("friendCount").get(function () {
 	return this.friends.length;
 });
 
+userSchema.pre('save', function (next) {
+	//hash the password before adding to DB
+	bcrypt.hash(this.password, 4).then((hash) => {
+		this.password = hash
+		console.log(this)
+
+		next(); // next allows the request to continue, otherwise the function freezes here
+	}).catch((err)=> console.log(err))
+})
 const User = model("user", userSchema);
+
 
 module.exports = User;

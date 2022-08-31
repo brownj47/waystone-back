@@ -2,6 +2,7 @@ const express = require('express');
 const allRoutes = require('./routes');
 const mongoose = require('./config/connection');
 const cors = require("cors")
+require('dotenv').config()
 
 // Sets up the Express App
 // =============================================================
@@ -18,6 +19,6 @@ app.use('/', allRoutes);
 
 mongoose.once('open',() => {
     app.listen(PORT, () => {
-		console.log(`API server running on port https//:localhost/${PORT}!`);
+		console.log(`API server running on port http://localhost:${PORT} !`);
 	  });
 });

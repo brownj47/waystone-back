@@ -4,5 +4,3 @@ const Comment = require('./Comment');
 const Group = require('./Group');
 
 module.exports = { User, Post, Comment, Group };
-
-export default { User, Post, Comment, Group }
