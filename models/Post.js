@@ -22,7 +22,7 @@ const postSchema = new Schema(
 		},
 		GroupId: {
 			type:String,
-			required: true,
+			default:''
 		},
 		createdAt: {
 			type:Date,
