@@ -30,6 +30,10 @@ const postSchema = new Schema(
 				ref: "comment",
 			  },
 		],
+		isDeactivated: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		toJSON: {

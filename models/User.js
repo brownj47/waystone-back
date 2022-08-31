@@ -47,8 +47,12 @@ const userSchema = new Schema(
 				ref: "group",
 			},
 		],
-	},
-	{
+		isDeactivated: {
+			type: Boolean,
+			default: false,
+		},
+  	},
+  	{
 		toJSON: {
 			virtuals: true,
 		},

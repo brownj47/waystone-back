@@ -5,6 +5,7 @@ const {
   createNewPost,
   updatePost,
   deletePost,
+  deactivatePost
 } = require('../../controllers/postController.js');
 
 // /api/posts
@@ -16,5 +17,8 @@ router
   .get(getOnePost)
   .put(updatePost)
   .delete(deletePost);
+
+// /api/posts/deactivate
+router.route('/deactivate').put(deactivatePost);
 
 module.exports = router;

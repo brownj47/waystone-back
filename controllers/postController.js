@@ -56,4 +56,18 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
     },
+
+	deactivatePost(req, res){
+        Post.findOneAndUpdate(
+            { _id: req.body.PostId },
+            { $set: {isDeactivated:req.body.isDeactivated} },
+            { new:true},
+        ).then((post) => {
+            console.log(post)
+        !post
+          ? res.status(404).json({ message: 'No post with this id!' })
+          : res.json(post)
+          })
+      .catch((err) => res.status(500).json(err));
+    },
 }

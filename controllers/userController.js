@@ -166,15 +166,18 @@ module.exports = {
     })
 
   },
-  getOneUser(req, res) {
-    User.findOne({ _id: req.params.userId })
-      .populate('posts')
-      .select('-__v')
-      .then((user) =>
-        !user
-          ? res.status(404).json({ message: 'No user with that ID' })
-          : res.json(user)
-      ).catch((err) => res.status(500).json(err));
-  },
+  deactivateUser(req, res){
+    User.findOneAndUpdate(
+        { _id: req.body.UserId },
+        { $set: {isDeactivated:req.body.isDeactivated} },
+        { new:true},
+    ).then((user) => {
+        console.log(user)
+    !user
+      ? res.status(404).json({ message: 'No user with this id!' })
+      : res.json(user)
+      })
+  .catch((err) => res.status(500).json(err));
+},
 
 }

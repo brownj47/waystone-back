@@ -41,6 +41,10 @@ const commentSchema = new Schema(
         	ref: 'comment',
         }
     ],  
+	isDeactivated: {
+		type: Boolean,
+		default: false,
+	},
     },
 );
 
