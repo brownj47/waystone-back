@@ -1,32 +1,58 @@
-const { User, Post, Group, Comment } = require('../models');
+const { User, Post, Comment, Group } = require('../models');
+
+require('dotenv').config()
+
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken")
 
 module.exports = {
-    getAllUsers(req, res) {
-        User.find()
-        .populate('posts')
-        .then((users) => res.json(users))
-        .catch((err) => {
-            console.log(err)
-            res.status(500).json(err)});
-    },
+  getAllUsers(req, res) {
+    User.find()
+      .populate('posts')
+      .then((users) => res.json(users))
+      .catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+      });
+  },
 
-    getOneUser(req, res) {
-        User.findOne({ _id: req.body.UserId })
-        .populate('posts')
-        .select('-__v')
-        .then((user) =>
+  getOneUser(req, res) {
+    User.findOne({ _id: req.body.UserId })
+      .populate('posts')
+      .select('-__v')
+      .then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
-    },
+  },
 
-    createNewUser(req, res) {
-        User.create(req.body)
-        .then((userData) => res.json(userData))
-        .catch((err) => res.status(500).json(err));
-    },
+  createNewUser(req, res) {
+    User.create(req.body)
+      .then((userData) => {
+
+        const token = jwt.sign(
+          {
+            id: userData.id,
+            email: userData.username
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "2h"
+          }
+        )
+
+        return res.json({
+          token: token,
+          user: userData
+        })
+      }
+      ).catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+      });
+  },
 
     randomFriend(req, res) {
         User.findOne({ _id: req.body.UserId })
@@ -59,10 +85,10 @@ module.exports = {
           : res.json(user)
         })
       .catch((err) => res.status(500).json(err));
-    },
+  },
 
-    deleteUser(req, res) {
-        User.findOneAndDelete({ _id: req.body.UserId })
+  deleteUser(req, res) {
+    User.findOneAndDelete({ _id: req.body.UserId })
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
@@ -70,45 +96,45 @@ module.exports = {
       )
       .then(() => res.json({ message: 'User and posts deleted!' }))
       .catch((err) => res.status(500).json(err));
-    },
+  },
 
-    addNewFriend(req, res) {
-        User.findOneAndUpdate(
-            { _id: req.body.UserId },
-            { $addToSet: { friends: req.body.FriendId } },
-        ).then((user) =>
-        !user
-          ? res.status(404).json({ message: 'No user with this id!' })
-          : res.json(user)
-        ).then(
-        User.findOneAndUpdate(
-            { _id: req.body.FriendId },
-            { $addToSet: { friends: req.body.UserId } },
-        )
+  addNewFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.body.UserId },
+      { $addToSet: { friends: req.body.FriendId } },
+    ).then((user) =>
+      !user
+        ? res.status(404).json({ message: 'No user with this id!' })
+        : res.json(user)
+    ).then(
+      User.findOneAndUpdate(
+        { _id: req.body.FriendId },
+        { $addToSet: { friends: req.body.UserId } },
+      )
         .catch((err) => {
-        console.log(err)
-        res.status(500).json(err)
-    }));
-    },
-	
-    deleteFriend(req, res) {
-        User.findOneAndUpdate(
-            { _id: req.body.UserId },
-            { $pull: { friends: req.body.FriendId } },
-        ).then((user) =>
-        !user
-          ? res.status(404).json({ message: 'No user with this id!' })
-          : res.json(user)
-        ).then(
-        User.findOneAndUpdate(
-            { _id: req.body.FriendId },
-            { $pull: { friends: req.body.UserId } },
-        )
+          console.log(err)
+          res.status(500).json(err)
+        }));
+  },
+
+  deleteFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.body.UserId },
+      { $pull: { friends: req.body.FriendId } },
+    ).then((user) =>
+      !user
+        ? res.status(404).json({ message: 'No user with this id!' })
+        : res.json(user)
+    ).then(
+      User.findOneAndUpdate(
+        { _id: req.body.FriendId },
+        { $pull: { friends: req.body.UserId } },
+      )
         .catch((err) => {
-        console.log(err)
-        res.status(500).json(err)
-    }));
-    },
+          console.log(err)
+          res.status(500).json(err)
+        }));
+  },
 
 	deactivateUser(req, res){
         User.findOneAndUpdate(
@@ -124,4 +150,3 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
     },
 }
-
