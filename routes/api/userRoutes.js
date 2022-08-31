@@ -4,13 +4,15 @@ const {
   getOneUser,
   randomFriend,
   createNewUser,
+  randomFriend,
   updateUser,
   deleteUser,
   requestFriend,
   acceptFriend,
   denyFriend,
   deleteFriend,
-  deactivateUser
+  deactivateUser,
+
 } = require('../../controllers/userController.js');
 
 // /api/users

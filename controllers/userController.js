@@ -73,19 +73,38 @@ module.exports = {
 		});
 	},
 
-	updateUser(req, res) {
-		User.findOneAndUpdate(
-		{ _id: req.params.userId },
-		{ $set: req.body },
-		{ new: true }
-		)
-		.then((user) => {
-			!user
-			? res.status(404).json({ message: "No user with this id!" })
-			: res.json(user);
+    randomFriend(req, res) {
+        User.findOne({ _id: req.body.UserId })
+        .populate('posts')
+        .select('-__v')
+        .then(async(user) =>{
+        	if (!user){
+         		res.status(404).json({ message: 'No user with that ID' })
+			}
+        	res.json(user)
+			const highlightedPosts = user.posts.sort(function(){return .5 - Math.random()}).slice(0,3);
+			console.log(highlightedPosts)
+			return await User.findOneAndUpdate(
+				{ _id: user.id },
+				{ $set: { highlightedPosts: highlightedPosts } },
+				{ new: true }
+			)
 		})
-		.catch((err) => res.status(500).json(err));
-	},
+      .catch((err) => res.status(500).json(err));
+    },
+
+    updateUser(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.body.UserId },
+            { $set: req.body },
+            {new: true}
+        ).then((user) => {
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+        })
+      .catch((err) => res.status(500).json(err));
+  },
 
 	deleteUser(req, res) {
 		User.findOneAndDelete({ _id: req.body.UserId })
