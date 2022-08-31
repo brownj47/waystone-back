@@ -28,6 +28,26 @@ module.exports = {
         .catch((err) => res.status(500).json(err));
     },
 
+    randomFriend(req, res) {
+        User.findOne({ _id: req.body.UserId })
+        .populate('posts')
+        .select('-__v')
+        .then(async(user) =>{
+        	if (!user){
+         		res.status(404).json({ message: 'No user with that ID' })
+			}
+        	res.json(user)
+			const highlightedPosts = user.posts.sort(function(){return .5 - Math.random()}).slice(0,3);
+			console.log(highlightedPosts)
+			return await User.findOneAndUpdate(
+				{ _id: user.id },
+				{ $set: { highlightedPosts: highlightedPosts } },
+				{ new: true }
+			)
+		})
+      .catch((err) => res.status(500).json(err));
+    },
+
     updateUser(req, res) {
         User.findOneAndUpdate(
             { _id: req.body.UserId },
@@ -104,3 +124,4 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
     },
 }
+
