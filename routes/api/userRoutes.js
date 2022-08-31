@@ -2,16 +2,22 @@ const router = require('express').Router();
 const {
   getAllUsers,
   getOneUser,
+  randomFriend,
   createNewUser,
   updateUser,
   deleteUser,
-  addNewFriend,
+  requestFriend,
+  acceptFriend,
+  denyFriend,
   deleteFriend,
   deactivateUser
 } = require('../../controllers/userController.js');
 
 // /api/users
 router.route('/').get(getAllUsers).post(createNewUser);
+
+// /api/d20
+router.route('/d20').get(randomFriend);
 
 // /api/users/user
 router
@@ -20,8 +26,11 @@ router
   .put(updateUser)
   .delete(deleteUser);
 
+// /api/users/requests
+router.route('/requests').post(requestFriend).put(acceptFriend).delete(denyFriend)
+
 // /api/users/friends
-router.route('/friends').post(addNewFriend).delete(deleteFriend)
+router.route('/friends').delete(deleteFriend)
 
 // /api/users/deactivate
 router.route('/deactivate').put(deactivateUser)

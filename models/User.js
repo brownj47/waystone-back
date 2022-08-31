@@ -29,6 +29,10 @@ const userSchema = new Schema(
 			// 	"invalid password",
 			// ],
 		},
+		bio: {
+			type: String,
+			default: ''
+		},
 		posts: [
 			{
 				type: Schema.Types.ObjectId,
@@ -41,10 +45,28 @@ const userSchema = new Schema(
 				ref: "user",
 			},
 		],
+		inbox: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "user",
+			},
+		],
+		outbox: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "user",
+			},
+		],
 		groups: [
 			{
 				type: Schema.Types.ObjectId,
 				ref: "group",
+			},
+		],
+		highlightedPosts: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "post",
 			},
 		],
 		isDeactivated: {

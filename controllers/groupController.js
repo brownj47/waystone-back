@@ -24,14 +24,19 @@ module.exports = {
 
     createNewGroup(req, res) {
         Group.create(req.body)
-        .then((groupData) => {
+		.then(async (groupData) => {
 			res.json(groupData)
-			return User.findOneAndUpdate(
-                {_id: groupData.admin},
-                {$addToSet: { groups: { _id: groupData.id } }},
-                {new: true}
-            ) 
-		})
+			const adminData = await User.findOneAndUpdate(
+				{ _id: groupData.admin },
+				{ $addToSet: { groups: { _id: groupData.id } } },
+				{ new: true }
+				);
+			return await Group.findOneAndUpdate(
+				{ _id: adminData.groups[adminData.groups.length - 1] },
+				{ $addToSet: { members: { _id: adminData._id } } },
+				{ new: true }
+				);
+			})
         .catch((err) => res.status(500).json(err));
     },
 
