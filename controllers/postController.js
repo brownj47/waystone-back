@@ -9,7 +9,22 @@ module.exports = {
 
     getOnePost(req, res){
         Post.findOne({ _id: req.body.PostId })
-         .select('-__v')
+		.populate({
+			path:'comments',
+			populate: {
+				path: 'replies',
+				populate: [{
+					path: 'replies',
+					populate: {
+						path: 'replies',
+						populate: {
+							path: 'UserId'
+						}
+					}
+				}]
+			}
+		})
+        .select('-__v')
         .then((post) =>
         !Post
           ? res.status(404).json({ message: 'No Post with that ID' })
