@@ -79,8 +79,8 @@ const userSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-  	},
-  	{
+	},
+	{
 		toJSON: {
 			virtuals: true,
 		},
@@ -92,6 +92,29 @@ userSchema.virtual("friendCount").get(function () {
 	return this.friends.length;
 });
 
+userSchema.pre("insertMany", async function (next, docs) {
+    if (Array.isArray(docs) && docs.length) {
+        const hashedUsers = docs.map(async (user) => {
+            return await new Promise((resolve, reject) => {
+                bcrypt.genSalt(4).then((salt) => {
+                    let password = user.password.toString()
+                    bcrypt.hash(password, salt).then(hash => {
+                        user.password = hash
+                        resolve(user)
+                    }).catch(e => {
+                        reject(e)
+                    })
+                }).catch((e) => {
+                    reject(e)
+                })
+            })
+        })
+        docs = await Promise.all(hashedUsers)
+        next()
+    } else {
+        return next(new Error("User list should not be empty")) // lookup early return pattern
+    }
+})
 userSchema.pre('save', function (next) {
 	//hash the password before adding to DB
 	bcrypt.hash(this.password, 4).then((hash) => {
@@ -99,7 +122,7 @@ userSchema.pre('save', function (next) {
 		console.log(this)
 
 		next(); // next allows the request to continue, otherwise the function freezes here
-	}).catch((err)=> console.log(err))
+	}).catch((err) => console.log(err))
 })
 const User = model("user", userSchema);
 

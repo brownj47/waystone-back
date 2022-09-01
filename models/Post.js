@@ -3,7 +3,7 @@ const commentSchema = require('./Comment')
 
 // Schema to create Thought model
 const postSchema = new Schema(
-	{	
+	{
 		title: {
 			type: String,
 			required: true,
@@ -17,18 +17,18 @@ const postSchema = new Schema(
 			max_length: 280
 		},
 		UserId: {
-				type:String,
-				required: true,
+			type: String,
+			required: true,
 		},
 		createdAt: {
-			type:Date,
-			default:Date.now()
+			type: Date,
+			default: Date.now()
 		},
 		comments: [
 			{
 				type: Schema.Types.ObjectId,
 				ref: "comment",
-			  },
+			},
 		],
 		isDeactivated: {
 			type: Boolean,
