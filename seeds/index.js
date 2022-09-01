@@ -36,15 +36,14 @@ userData = [
 
 mongoose.once('open', async () => {
     try {
+
         await Post.deleteMany({});
         await User.deleteMany({});
         await Comment.deleteMany({});
         await Group.deleteMany({});
 
-        await User.insertMany(userData).then()
-
-
-
+        await User.insertMany(userData).then(data=>console.log(`Data inserted`)).catch(err=>console.log(err))
+        process.exit(0)
     } catch (error) {
         console.log("Error: " + error)
     }
