@@ -3,20 +3,14 @@ const { Schema, model } = require('mongoose');
 //Comment schema
 const commentSchema = new Schema(
     {
-	//I believe this will be required for nesting comments, but I vote we try first with the replies matrix style array
-    // parentId: {
-    //     type: Schema.Types.ObjectId,
-    //     unqiue: true,
-    //     required: true,
-    // },
-    // depth: {
-    //     type: Number,
-    //     default: 1
-    // },
     comment_body: {
         type:String,
         required: true,
         max_length: 140
+    },
+    username: {
+        type:String,
+        required: true
     },
     UserId: {
         type:String,
@@ -26,6 +20,14 @@ const commentSchema = new Schema(
         type:String,
         required: true
     },
+	ParentId:{
+        type:String,
+        required: true
+    },
+	depth:{
+		type:Number,
+        default: 0
+	},
     createdAt: {
         type:Date,
         default:Date.now()
@@ -34,7 +36,6 @@ const commentSchema = new Schema(
 		type:Number,
 		default:0
 	},
-	//This will be the first attempt at nesting comments, I don't think it'll work without some kind of parentId value in the model
     replies: [
         {
         	type: Schema.Types.ObjectId,

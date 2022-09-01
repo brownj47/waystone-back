@@ -33,6 +33,10 @@ const userSchema = new Schema(
 			type: String,
 			default: ''
 		},
+		img_url: {
+			type: String,
+			default: ''
+		},
 		posts: [
 			{
 				type: Schema.Types.ObjectId,

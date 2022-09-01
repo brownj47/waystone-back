@@ -37,7 +37,7 @@ module.exports = {
          		res.status(404).json({ message: 'No user with that ID' })
 			}
         	res.json(user)
-			const highlightedPosts = user.posts.sort(function(){return .5 - Math.random()}).slice(0,3);
+			const highlightedPosts = user.posts.sort(()=>{return .5 - Math.random()}).slice(0,3);
 			console.log(highlightedPosts)
 			return await User.findOneAndUpdate(
 				{ _id: user.id },

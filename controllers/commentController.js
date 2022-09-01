@@ -63,6 +63,24 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
     },
 
+	commentReply(req, res){
+		Comment.create(req.body)
+        .then( async (commentData) => {
+            res.json(commentData)
+			console.log(commentData)
+            const replyObject = await Comment.findOneAndUpdate(
+				{ _id: commentData.ParentId },
+				{ $addToSet: {replies:commentData._id} },
+				{ new:true},
+            );
+			console.log(replyObject)
+			return
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json(err)
+        });
+    },
+
 	deactivateComment(req, res){
         Comment.findOneAndUpdate(
             { _id: req.body.CommentId },
