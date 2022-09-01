@@ -20,6 +20,10 @@ const postSchema = new Schema(
 			type: String,
 			required: true,
 		},
+		GroupId: {
+			type:String,
+			default:''
+		},
 		createdAt: {
 			type: Date,
 			default: Date.now()

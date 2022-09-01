@@ -7,6 +7,6 @@ router.use('/api', apiRoutes);
 router.use('/login', loginRoutes);
 router.use('/checkToken', checkTokenRoutes);
 
-router.use((req, res) => res.send('How did you get here?'));
+router.use((req, res) => res.send('How dare you enter the Dungeon without the Masters invitation!'));
 
 module.exports = router;

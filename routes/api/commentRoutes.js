@@ -4,6 +4,7 @@ const {
   getOneComment,
   createNewComment,
   updateComment,
+  commentReply,
   deleteComment,
   deactivateComment
 } = require('../../controllers/commentController.js');
@@ -17,6 +18,9 @@ router
   .get(getOneComment)
   .put(updateComment)
   .delete(deleteComment);
+
+// /api/comments/reply
+router.route('/reply').post(commentReply);
 
 // /api/comments/deactivate
 router.route('/deactivate').put(deactivateComment);
