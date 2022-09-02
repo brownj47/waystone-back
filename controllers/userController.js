@@ -17,7 +17,7 @@ module.exports = {
   },
 
   getOneUser(req, res) {
-    User.findOne({ _id: req.body.UserId })
+    User.findOne({ _id: req.params.UserId })
       .populate("posts")
       .select("-__v")
       .then((user) =>
