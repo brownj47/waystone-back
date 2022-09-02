@@ -12,7 +12,6 @@ const {
   requestGroup,
   deleteFriend,
   deactivateUser,
-
 } = require('../../controllers/userController.js');
 
 // /api/users

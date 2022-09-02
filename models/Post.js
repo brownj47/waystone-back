@@ -16,6 +16,10 @@ const postSchema = new Schema(
 			min_length: 1,
 			max_length: 280
 		},
+		username: {
+				type:String,
+				required: true,
+		},
 		UserId: {
 			type: String,
 			required: true,
