@@ -22,7 +22,7 @@ router.route('/d20').get(randomFriend);
 
 // /api/users/user
 router
-  .route('/user')
+  .route('/user/:UserId')
   .get(getOneUser) 
   .put(updateUser)
   .delete(deleteUser);
