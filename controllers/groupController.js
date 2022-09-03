@@ -12,7 +12,14 @@ module.exports = {
 
     getOneGroup(req, res) {
         Group.findOne({ _id: req.body.GroupId })
-        .populate('posts')
+        .populate([
+			{
+				path:'posts',
+			},
+			{
+				path:'members',
+			},
+		])
         .select('-__v')
         .then((group) =>
         !group

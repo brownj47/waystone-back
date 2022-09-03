@@ -12,9 +12,9 @@ const {
 // /api/comments
 router.route('/').get(getAllComments).post(createNewComment);
 
-// /api/comments/comment
+// /api/comments/comment/:CommentId
 router
-  .route('/comment')
+  .route('/comment/:CommentId')
   .get(getOneComment)
   .put(updateComment)
   .delete(deleteComment);

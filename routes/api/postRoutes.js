@@ -11,9 +11,9 @@ const {
 // /api/posts
 router.route('/').get(getAllPosts).post(createNewPost);
 
-// /api/posts/:PostId
+// /api/posts/post/:PostId
 router
-  .route('/post')
+  .route('/post/:PostId')
   .get(getOnePost)
   .put(updatePost)
   .delete(deletePost);

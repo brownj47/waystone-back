@@ -14,9 +14,9 @@ const {
 // /api/groups
 router.route('/').get(getAllGroups).post(createNewGroup);
 
-// /api/groups/group
+// /api/groups/group/:GroupId
 router
-  .route('/group')
+  .route('/group/:GroupId')
   .get(getOneGroup)
   .put(updateGroup)
   .delete(deleteGroup);
