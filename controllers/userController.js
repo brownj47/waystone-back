@@ -1,4 +1,5 @@
 const { User, Post, Comment, Group } = require("../models");
+const mongoose = require('../config/connection');
 
 require("dotenv").config();
 
@@ -40,22 +41,27 @@ module.exports = {
 		res.status(500).json(err)});
   },
 
-	randomFriend(req, res) {
-        User.findOne({ _id: req.body.UserId })
-        .populate('posts')
-        .select('-__v')
-        .then(async(user) =>{
-        	if (!user){
-         		res.status(404).json({ message: 'No user with that ID' })
-			}
-        	res.json(user)
-			const highlightedPosts = user.posts.sort(()=>{return .5 - Math.random()}).slice(0,3);
-			console.log(highlightedPosts)
-			return await User.findOneAndUpdate(
-				{ _id: user.id },
-				{ $set: { highlightedPosts: highlightedPosts } },
-				{ new: true }
-			)
+	randomUser(req, res) {
+		User.countDocuments({isDeactivated:false})
+		.then(count => {
+			const random = Math.floor(Math.random()*count)
+			console.log(random)
+			User.findOne().skip(random)
+			.populate('posts')
+			.select('-__v')
+			.then(async(user) =>{
+				if (!user){
+					res.status(404).json({ message: 'No user with that ID' })
+				}
+				res.json(user)
+				const highlightedPosts = user.posts.sort(()=>{return .5 - Math.random()}).slice(0,3);
+				// console.log(highlightedPosts)
+				return await User.findOneAndUpdate(
+					{ _id: user.id },
+					{ $set: { highlightedPosts: highlightedPosts } },
+					{ new: true }
+				)
+			})
 		})
       .catch((err) => res.status(500).json(err));
   },

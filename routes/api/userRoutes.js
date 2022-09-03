@@ -2,7 +2,7 @@ const router = require('express').Router();
 const {
   getAllUsers,
   getOneUser,
-  randomFriend,
+  randomUser,
   createNewUser,
   updateUser,
   deleteUser,
@@ -18,7 +18,7 @@ const {
 router.route('/').get(getAllUsers).post(createNewUser);
 
 // /api/d20
-router.route('/d20').get(randomFriend);
+router.route('/d20').get(randomUser);
 
 // /api/users/user
 router
