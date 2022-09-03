@@ -118,7 +118,7 @@ module.exports = {
   requestFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
-      { $addToSet: { outbox: req.body.FriendId } }
+      { $addToSet: { outbox: req.body.RecipientId } }
     )
       .then((user) =>
         !user
@@ -127,7 +127,7 @@ module.exports = {
       )
       .then(
         User.findOneAndUpdate(
-          { _id: req.body.FriendId },
+          { _id: req.body.RecipientId },
           { $addToSet: { inbox: req.body.UserId } },
         ).catch((err) => {
           console.log(err);
@@ -140,8 +140,8 @@ module.exports = {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
       {
-        $addToSet: { friends: req.body.FriendId },
-        $pull: { inbox: req.body.FriendId }
+        $addToSet: { friends: req.body.SenderId },
+        $pull: { inbox: req.body.SenderId }
       }
     )
       .then((user) =>
@@ -151,7 +151,7 @@ module.exports = {
       )
       .then(
         User.findOneAndUpdate(
-          { _id: req.body.FriendId },
+          { _id: req.body.SenderId },
           { $addToSet: { friends: req.body.UserId } }
         ).catch((err) => {
           console.log(err);
@@ -163,7 +163,7 @@ module.exports = {
   denyFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
-      { $pull: { inbox: req.body.FriendId } }
+      { $pull: { inbox: req.body.SenderId } }
     )
       .then((user) =>
         !user
