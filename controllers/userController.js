@@ -1,4 +1,5 @@
 const { User, Post, Comment, Group } = require("../models");
+const mongoose = require('../config/connection');
 
 require("dotenv").config();
 
@@ -18,32 +19,49 @@ module.exports = {
 
   getOneUser(req, res) {
     User.findOne({ _id: req.params.UserId })
-      .populate("posts")
+      .populate([
+		{
+			path:'posts',
+		},
+		{
+			path:'friends',
+		},
+		{
+			path:'groups',
+		},
+	])
       .select("-__v")
       .then((user) =>
         !user
           ? res.status(404).json({ message: "No user with that ID" })
           : res.json(user)
       )
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+		console.log(err)
+		res.status(500).json(err)});
   },
 
-	randomFriend(req, res) {
-        User.findOne({ _id: req.body.UserId })
-        .populate('posts')
-        .select('-__v')
-        .then(async(user) =>{
-        	if (!user){
-         		res.status(404).json({ message: 'No user with that ID' })
-			}
-        	res.json(user)
-			const highlightedPosts = user.posts.sort(()=>{return .5 - Math.random()}).slice(0,3);
-			console.log(highlightedPosts)
-			return await User.findOneAndUpdate(
-				{ _id: user.id },
-				{ $set: { highlightedPosts: highlightedPosts } },
-				{ new: true }
-			)
+	randomUser(req, res) {
+		User.countDocuments({isDeactivated:false})
+		.then(count => {
+			const random = Math.floor(Math.random()*count)
+			console.log(random)
+			User.findOne().skip(random)
+			.populate('posts')
+			.select('-__v')
+			.then(async(user) =>{
+				if (!user){
+					res.status(404).json({ message: 'No user with that ID' })
+				}
+				res.json(user)
+				const highlightedPosts = user.posts.sort(()=>{return .5 - Math.random()}).slice(0,3);
+				// console.log(highlightedPosts)
+				return await User.findOneAndUpdate(
+					{ _id: user.id },
+					{ $set: { highlightedPosts: highlightedPosts } },
+					{ new: true }
+				)
+			})
 		})
       .catch((err) => res.status(500).json(err));
   },
@@ -100,7 +118,7 @@ module.exports = {
   requestFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
-      { $addToSet: { outbox: req.body.FriendId } }
+      { $addToSet: { outbox: req.body.RecipientId } }
     )
       .then((user) =>
         !user
@@ -109,7 +127,7 @@ module.exports = {
       )
       .then(
         User.findOneAndUpdate(
-          { _id: req.body.FriendId },
+          { _id: req.body.RecipientId },
           { $addToSet: { inbox: req.body.UserId } },
         ).catch((err) => {
           console.log(err);
@@ -122,8 +140,8 @@ module.exports = {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
       {
-        $addToSet: { friends: req.body.FriendId },
-        $pull: { inbox: req.body.FriendId }
+        $addToSet: { friends: req.body.SenderId },
+        $pull: { inbox: req.body.SenderId }
       }
     )
       .then((user) =>
@@ -133,7 +151,7 @@ module.exports = {
       )
       .then(
         User.findOneAndUpdate(
-          { _id: req.body.FriendId },
+          { _id: req.body.SenderId },
           { $addToSet: { friends: req.body.UserId } }
         ).catch((err) => {
           console.log(err);
@@ -145,7 +163,7 @@ module.exports = {
   denyFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.body.UserId },
-      { $pull: { inbox: req.body.FriendId } }
+      { $pull: { inbox: req.body.SenderId } }
     )
       .then((user) =>
         !user
