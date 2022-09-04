@@ -10,7 +10,10 @@ module.exports = {
 	getAllUsers(req, res) {
 		User.find()
 		.sort({createdAt :'descending'})
-		.populate("posts")
+		.populate({
+			path:'posts',
+			options: {sort: {createdAt:'descending'} },
+		})
 		.then((users) => res.json(users))
 		.catch((err) => {
 			console.log(err);
