@@ -67,6 +67,12 @@ const userSchema = new Schema(
 				ref: "group",
 			},
 		],
+		groupInvites: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: "group",
+			},
+		],
 		groups: [
 			{
 				type: Schema.Types.ObjectId,
