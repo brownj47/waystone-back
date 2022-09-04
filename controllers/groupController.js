@@ -44,12 +44,12 @@ module.exports = {
     createNewGroup(req, res) {
         Group.create(req.body)
             .then(async (groupData) => {
-                User.findOneAndUpdate(
+                const adminData = await User.findOneAndUpdate(
                     { _id: groupData.admin },
-                    { $addToSet: { groups: { _id: groupData.id } } },
+                    { $addToSet: { groups: groupData.id } },
                     { new: true }
-                    );
-                    res.json(groupData)
+                );
+                res.json([groupData, adminData])
             })
             .catch((err) => res.status(500).json(err));
     },
