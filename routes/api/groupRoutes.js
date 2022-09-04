@@ -5,6 +5,7 @@ const {
   createNewGroup,
   updateGroup,
   deleteGroup,
+  sendInvite,
   acceptRequest,
   denyRequest,
   deleteMember,
@@ -22,7 +23,7 @@ router
   .delete(deleteGroup);
 
 // /api/groups/members
-router.route('/members').put(acceptRequest).delete(denyRequest)
+router.route('/members').post(sendInvite).put(acceptRequest).delete(denyRequest)
 
 // /api/groups/members/remove
 router.route('/members/remove').delete(deleteMember)

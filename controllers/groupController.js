@@ -11,7 +11,7 @@ module.exports = {
     },
 
     getOneGroup(req, res) {
-        Group.findOne({ _id: req.body.GroupId })
+        Group.findOne({ _id: req.params.GroupId })
         .populate([
 			{
 				path:'posts',
@@ -64,12 +64,33 @@ module.exports = {
         Group.findOneAndDelete({ _id: req.body.GroupId })
       .then((group) =>
         !group
-          ? res.status(404).json({ message: 'No group with that ID' })
-          : Post.deleteMany({ _id: { $in: group.posts } })
+			? res.status(404).json({ message: 'No group with that ID' })
+			: Post.deleteMany({ _id: { $in: group.posts } })
       )
       .then(() => res.json({ message: 'group and posts deleted!' }))
       .catch((err) => res.status(500).json(err));
     },
+
+	sendInvite(req, res) {
+		User.findOneAndUpdate(
+            { _id: req.body.UserId },
+            { 
+				$addToSet: { groupInvites: req.body.GroupId },
+			},
+        ).then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+        ).then(
+        Group.findOneAndUpdate(
+            { _id: req.body.GroupId },
+            { $addToSet: { outbox: req.body.UserId } },
+        )
+        .catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+    }));
+	},
 
     acceptRequest(req, res) {
         Group.findOneAndUpdate(
