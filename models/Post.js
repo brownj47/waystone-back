@@ -28,10 +28,6 @@ const postSchema = new Schema(
 			type:String,
 			default:''
 		},
-		createdAt: {
-			type: Date,
-			default: Date.now()
-		},
 		comments: [
 			{
 				type: Schema.Types.ObjectId,
@@ -46,7 +42,8 @@ const postSchema = new Schema(
 	{
 		toJSON: {
 			virtuals: true,
-		}
+		},
+		timestamps: true
 	}
 );
 

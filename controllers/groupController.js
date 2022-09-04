@@ -4,6 +4,7 @@ module.exports = {
     getAllGroups(req, res) {
         Group.find()
         .populate('posts')
+		.sort({createdAt :'descending'})
         .then((groups) => res.json(groups))
         .catch((err) => {
             console.log(err)
