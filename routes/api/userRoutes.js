@@ -10,6 +10,8 @@ const {
   acceptFriend,
   denyFriend,
   requestGroup,
+  acceptInvite,
+  denyInvite,
   deleteFriend,
   deactivateUser,
 } = require('../../controllers/userController.js');
@@ -31,7 +33,7 @@ router
 router.route('/requests').post(requestFriend).put(acceptFriend).delete(denyFriend)
 
 // /api/users/groups
-router.route('/groups').post(requestGroup)
+router.route('/groups').post(requestGroup).put(acceptInvite).delete(denyInvite)
 
 // /api/users/friends
 router.route('/friends').delete(deleteFriend)

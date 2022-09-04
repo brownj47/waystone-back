@@ -52,6 +52,7 @@ module.exports = {
     },
 
     getOneGroup(req, res) {
+<<<<<<< HEAD
         Group.findOne({ _id: req.body.GroupId })
             .populate([
                 {
@@ -68,6 +69,24 @@ module.exports = {
                     : res.json(group)
             )
             .catch((err) => res.status(500).json(err));
+=======
+        Group.findOne({ _id: req.params.GroupId })
+        .populate([
+			{
+				path:'posts',
+			},
+			{
+				path:'members',
+			},
+		])
+        .select('-__v')
+        .then((group) =>
+        !group
+          ? res.status(404).json({ message: 'No group with that ID' })
+          : res.json(group)
+      )
+      .catch((err) => res.status(500).json(err));
+>>>>>>> 3c3a11355b6851e9a1c5eb3bee72a6785c0d0629
     },
 
     createNewGroup(req, res) {
@@ -98,6 +117,7 @@ module.exports = {
 
     deleteGroup(req, res) {
         Group.findOneAndDelete({ _id: req.body.GroupId })
+<<<<<<< HEAD
             .then((group) =>
                 !group
                     ? res.status(404).json({ message: 'No group with that ID' })
@@ -105,7 +125,37 @@ module.exports = {
             )
             .then(() => res.json({ message: 'group and posts deleted!' }))
             .catch((err) => res.status(500).json(err));
+=======
+      .then((group) =>
+        !group
+			? res.status(404).json({ message: 'No group with that ID' })
+			: Post.deleteMany({ _id: { $in: group.posts } })
+      )
+      .then(() => res.json({ message: 'group and posts deleted!' }))
+      .catch((err) => res.status(500).json(err));
+>>>>>>> 3c3a11355b6851e9a1c5eb3bee72a6785c0d0629
     },
+
+	sendInvite(req, res) {
+		User.findOneAndUpdate(
+            { _id: req.body.UserId },
+            { 
+				$addToSet: { groupInvites: req.body.GroupId },
+			},
+        ).then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+        ).then(
+        Group.findOneAndUpdate(
+            { _id: req.body.GroupId },
+            { $addToSet: { outbox: req.body.UserId } },
+        )
+        .catch((err) => {
+        console.log(err)
+        res.status(500).json(err)
+    }));
+	},
 
     acceptRequest(req, res) {
         Group.findOneAndUpdate(
