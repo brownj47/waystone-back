@@ -12,10 +12,39 @@ module.exports = {
     },
     getAllUsersGroups(req, res) {
 
-        console.log(req.body.idList)
-        Group.findbyPk()
-            .populate('posts')
-            .then((groups) => res.json(groups))
+        User.findOne({ _id: req.params.UserId })
+            .populate([
+                {
+                    path: 'groups',
+                },
+            ])
+            .select("-__v")
+            .then(async (user) => {
+                if (!user) {
+                    return res.status(404).json({ message: "No user with that ID" })
+                }
+
+                const groupArray = []
+                for (let i = 0; i < user.groups.length; i++) {
+                    await Group.findById(user.groups[i]._id)
+                        .populate([
+                            {
+                                path: 'posts',
+                            },
+                            {
+                                path: 'members',
+                            },
+                            {
+                                path: 'admin',
+                            },
+                        ])
+                        .then(group => {
+                            console.log(group)
+                            groupArray.push(group)
+                        })
+                }
+                res.json(groupArray)
+            })
             .catch((err) => {
                 console.log(err)
                 res.status(500).json(err)
@@ -46,7 +75,7 @@ module.exports = {
             .then(async (groupData) => {
                 const adminData = await User.findOneAndUpdate(
                     { _id: groupData.admin },
-                    { $addToSet: { groups: groupData.id } },
+                    { $addToSet: { groups: groupData._id } },
                     { new: true }
                 );
                 res.json([groupData, adminData])
