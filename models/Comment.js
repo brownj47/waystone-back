@@ -28,10 +28,6 @@ const commentSchema = new Schema(
 		type:Number,
         default: 0
 	},
-    createdAt: {
-        type:Date,
-        default:Date.now()
-    },
 	votes:{
 		type:Number,
 		default:0
@@ -47,6 +43,12 @@ const commentSchema = new Schema(
 		default: false,
 	},
     },
+	{
+		toJSON: {
+			virtuals: true,
+		},
+		timestamps: true
+	}
 );
 
 const Comment = model('comment', commentSchema);

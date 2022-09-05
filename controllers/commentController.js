@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken")
 module.exports = {
     getAllComments(req, res){
         Comment.find()
+		.sort({createdAt :'descending'})
         .then((comments) => res.json(comments))
         .catch((err) => res.status(500).json(err));
     },
