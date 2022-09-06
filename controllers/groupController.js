@@ -3,12 +3,12 @@ const { User, Post, Group, Comment } = require('../models');
 module.exports = {
     getAllGroups(req, res) {
         Group.find()
-            .populate('posts')
-            .then((groups) => res.json(groups))
-            .catch((err) => {
-                console.log(err)
-                res.status(500).json(err)
-            });
+        .populate('posts')
+		.sort({createdAt :'descending'})
+        .then((groups) => res.json(groups))
+        .catch((err) => {
+            console.log(err)
+            res.status(500).json(err)});
     },
     getAllUsersGroups(req, res) {
 
@@ -98,13 +98,13 @@ module.exports = {
 
     deleteGroup(req, res) {
         Group.findOneAndDelete({ _id: req.body.GroupId })
-      .then((group) =>
-        !group
-			? res.status(404).json({ message: 'No group with that ID' })
-			: Post.deleteMany({ _id: { $in: group.posts } })
-      )
-      .then(() => res.json({ message: 'group and posts deleted!' }))
-      .catch((err) => res.status(500).json(err));
+            .then((group) =>
+                !group
+                    ? res.status(404).json({ message: 'No group with that ID' })
+                    : Post.deleteMany({ _id: { $in: group.posts } })
+            )
+            .then(() => res.json({ message: 'group and posts deleted!' }))
+            .catch((err) => res.status(500).json(err));
     },
 
 	sendInvite(req, res) {

@@ -35,7 +35,7 @@ const userSchema = new Schema(
 		},
 		img_url: {
 			type: String,
-			default: ''
+			default: 'https://placedog.net/640/640?random'
 		},
 		posts: [
 			{
@@ -94,6 +94,7 @@ const userSchema = new Schema(
 		toJSON: {
 			virtuals: true,
 		},
+		timestamps:true
 	}
 );
 

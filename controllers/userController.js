@@ -9,7 +9,11 @@ const jwt = require("jsonwebtoken");
 module.exports = {
 	getAllUsers(req, res) {
 		User.find()
-		.populate("posts")
+		.sort({createdAt :'descending'})
+		.populate({
+			path:'posts',
+			options: {sort: {createdAt:'descending'} },
+		})
 		.then((users) => res.json(users))
 		.catch((err) => {
 			console.log(err);
