@@ -63,7 +63,7 @@ module.exports = {
             res.json(postData)
             return User.findOneAndUpdate(
                 {_id: postData.UserId},
-                {$addToSet: { posts: { _id: postData.id } }},
+                {$addToSet: { posts: postData.id  }},
                 {new: true}
             ) 
         }).catch((err) => {
