@@ -10,8 +10,8 @@ module.exports = {
             console.log(err)
             res.status(500).json(err)});
     },
+	
     getAllUsersGroups(req, res) {
-
         User.findOne({ _id: req.params.UserId })
             .populate([
                 {
