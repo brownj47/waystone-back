@@ -122,7 +122,7 @@ module.exports = {
 	requestFriend(req, res) {
 		User.findOneAndUpdate(
 		{ _id: req.body.UserId },
-		{ $addToSet: { outbox: req.body.RecipientId } }
+		{ $addToSet: { outbox: req.body.RecipientId } },
 		)
 		.then((user) =>
 			!user
