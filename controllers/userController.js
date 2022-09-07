@@ -33,6 +33,9 @@ module.exports = {
 		{
 			path:'groups',
 		},
+		{
+			path:'inbox',
+		},
 		])
 		.select("-__v")
 		.then((user) =>
