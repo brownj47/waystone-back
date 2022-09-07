@@ -3,6 +3,25 @@ const { User, Post, Group, Comment } = require('../models');
 module.exports = {
     getAllPosts(req, res){
         Post.find()
+		.populate({
+			path:'comments',
+			options: {sort: {createdAt:'descending'} },
+			populate: {
+				path: 'replies',
+				options: {sort: {createdAt:'descending'} },
+				populate: [{
+					path: 'replies',
+					options: {sort: {createdAt:'descending'} },
+					populate: {
+						path: 'replies',
+						options: {sort: {createdAt:'descending'} },
+						populate: {
+							path: 'UserId'
+						}
+					}
+				}]
+			}
+		})
 		.sort({createdAt :'descending'})
         .then((posts) => res.json(posts))
         .catch((err) => res.status(500).json(err));
